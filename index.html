@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HM Team · Diagnóstico de Venda</title>
+<meta name="description" content="Descubra em 2 minutos o que falta para vender a sua casa mais depressa.">
+
+<script>
+  var PIXEL_ID = 'PIXEL_ID_AQUI';
+  var PIXEL_ATIVO = PIXEL_ID.indexOf('AQUI') === -1;
+  var CHAVE_CONSENTIMENTO = 'diag_hmteam_cookies';
+
+  function carregarPixel(){
+    if(!PIXEL_ATIVO || window.fbq) return;
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', PIXEL_ID);
+    fbq('track','PageView');
+  }
+  function temConsentimento(){
+    try { return localStorage.getItem(CHAVE_CONSENTIMENTO)==='aceite'; }
+    catch(e){ return false; }
+  }
+  if (temConsentimento()) carregarPixel();
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --principal:#A0885B;
+    --destaque:#DDD2BE;
+    --fundo:#FFF9F1;
+    --escuro:#001A39;
+    --erro:#C0392B;
+    --ok:#2E7D5B;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Inter', sans-serif;
+    background:var(--fundo);
+    color:var(--escuro);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Fraunces', serif; font-weight:600;}
+  img{max-width:100%; display:block;}
+  button{font-family:inherit; cursor:pointer;}
+  .wrap{max-width:640px; margin:0 auto; padding:0 20px;}
+
+  /* ===== HERO ===== */
+  .hero{
+    position:relative;
+    padding:44px 0 40px;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 8% -10%, rgba(160,136,91,.16), transparent 55%),
+      radial-gradient(circle at 100% 0%, rgba(221,210,190,.5), transparent 50%),
+      var(--fundo);
+  }
+  .hero-pattern{
+    position:absolute; inset:0; opacity:.5; pointer-events:none;
+    background-image:
+      repeating-linear-gradient(135deg, rgba(160,136,91,.06) 0 2px, transparent 2px 26px);
+  }
+  .logo{
+    position:relative; z-index:1;
+    font-family:'Fraunces', serif; font-weight:600; font-size:20px;
+    letter-spacing:.02em; margin-bottom:26px;
+  }
+  .hero-inner{position:relative; z-index:1;}
+  .hero h1{
+    font-size:clamp(28px, 6.4vw, 42px);
+    line-height:1.12;
+    letter-spacing:-.02em;
+    text-wrap:balance;
+    max-width:20ch;
+  }
+  .hero h1 em{
+    display:block;
+    font-style:italic;
+    color:var(--principal);
+    font-size:.68em;
+    margin-top:6px;
+    font-weight:500;
+  }
+  .hero p.sub{
+    margin-top:18px;
+    font-size:16.5px;
+    color:#2c3d55;
+    max-width:52ch;
+  }
+  .selos{
+    display:flex; flex-wrap:wrap; gap:10px;
+    margin-top:22px;
+  }
+  .selo{
+    background:#fff; border:1px solid var(--destaque);
+    padding:7px 14px; border-radius:100px;
+    font-size:13px; font-weight:600; color:var(--principal);
+  }
+  .cta-hero{
+    margin-top:28px;
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--principal); color:#fff;
+    border:none; padding:16px 26px; border-radius:12px;
+    font-size:16px; font-weight:700;
+    box-shadow:0 10px 24px -8px rgba(160,136,91,.55);
+  }
+  .cta-hero:active{transform:translateY(1px);}
+
+  /* ===== QUIZ ===== */
+  .quiz-section{padding:36px 0 60px; display:none;}
+  .quiz-section.ativo{display:block;}
+  .barra-progresso-wrap{margin-bottom:8px;}
+  .barra-progresso{
+    height:6px; background:var(--destaque); border-radius:100px; overflow:hidden;
+  }
+  .barra-progresso-fill{
+    height:100%; width:25%; background:var(--principal);
+    transition:width .35s ease;
+  }
+  .passo-label{
+    font-size:13px; font-weight:600; color:var(--principal);
+    margin:10px 0 24px; letter-spacing:.02em;
+  }
+  .passo{display:none;}
+  .passo.ativo{display:block; animation:fadeIn .3s ease;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+  .passo h2{font-size:22px; margin-bottom:22px;}
+  .campo{margin-bottom:22px;}
+  .campo label.rotulo{
+    display:block; font-weight:600; font-size:14.5px; margin-bottom:10px;
+  }
+  .grelha{display:grid; gap:10px;}
+  .grelha.col2{grid-template-columns:1fr 1fr;}
+  .grelha.col4{grid-template-columns:repeat(2,1fr);}
+  @media(min-width:480px){.grelha.col4{grid-template-columns:repeat(4,1fr);}}
+  .opcao-btn{
+    border:1.5px solid var(--destaque); background:#fff;
+    border-radius:10px; padding:14px 10px; font-size:14px; font-weight:600;
+    text-align:center; color:var(--escuro); transition:.15s;
+  }
+  .opcao-btn.selecionada{
+    border-color:var(--principal); background:rgba(160,136,91,.1);
+    color:var(--principal);
+  }
+  .opcao-lista{display:flex; flex-direction:column; gap:9px;}
+  .opcao-lista .opcao-btn{text-align:left;}
+  .chips{display:flex; flex-wrap:wrap; gap:9px;}
+  .chip{
+    border:1.5px solid var(--destaque); background:#fff;
+    border-radius:100px; padding:10px 16px; font-size:13.5px; font-weight:600;
+  }
+  .chip.selecionada{
+    border-color:var(--principal); background:var(--principal); color:#fff;
+  }
+  input[type=text], input[type=tel], input[type=email]{
+    width:100%; border:1.5px solid var(--destaque); border-radius:10px;
+    padding:14px 15px; font-size:15px; font-family:inherit; background:#fff;
+    color:var(--escuro);
+  }
+  input:focus{outline:2px solid var(--principal); outline-offset:1px;}
+  .campo.erro input, .campo.erro .grelha, .campo.erro .opcao-lista{
+    outline:none;
+  }
+  .campo.erro input{border-color:var(--erro); background:#FDF1EF;}
+  .msg-erro{
+    display:none; color:var(--erro); font-size:12.5px; margin-top:6px; font-weight:600;
+  }
+  .campo.erro .msg-erro{display:block;}
+  .consent-check{
+    display:flex; gap:10px; align-items:flex-start; margin-top:8px; font-size:13.5px;
+  }
+  .consent-check input{width:18px; height:18px; margin-top:2px; flex-shrink:0;}
+  .consent-check a{color:var(--principal); font-weight:600;}
+
+  .nav-btns{display:flex; gap:12px; margin-top:30px;}
+  .btn{
+    flex:1; border:none; border-radius:12px; padding:15px; font-size:15px;
+    font-weight:700; text-align:center;
+  }
+  .btn-voltar{background:#fff; border:1.5px solid var(--destaque); color:var(--escuro);}
+  .btn-continuar{background:var(--principal); color:#fff;}
+  .btn-continuar:disabled{opacity:.6;}
+
+  /* Banner cookies */
+  .cookie-banner{
+    position:fixed; left:14px; right:14px; bottom:14px; z-index:50;
+    background:#fff; border:1px solid var(--destaque); border-radius:14px;
+    padding:18px; box-shadow:0 12px 34px -12px rgba(0,26,57,.25);
+    display:none;
+  }
+  .cookie-banner.ativo{display:block;}
+  .cookie-banner p{font-size:13.5px; color:#2c3d55; margin-bottom:12px;}
+  .cookie-btns{display:flex; gap:10px;}
+  .cookie-btns button{flex:1; border-radius:9px; padding:11px; font-size:13.5px; font-weight:700;}
+  .cookie-aceitar{background:var(--principal); color:#fff; border:none;}
+  .cookie-recusar{background:#fff; border:1.5px solid var(--destaque); color:var(--escuro);}
+
+  @media(max-width:480px){
+    .grelha.col2{grid-template-columns:1fr 1fr;}
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-pattern" aria-hidden="true"></div>
+  <div class="wrap hero-inner">
+    <div class="logo">HM Team</div>
+    <h1>A sua casa está pronta para ir para o mercado?
+      <em>Ou vai ficar meses à espera?</em>
+    </h1>
+    <p class="sub">
+      Duas casas iguais, na mesma rua: uma vende em 6 semanas, a outra
+      fica 8 meses. A diferença raramente é o imóvel — é um documento
+      em falta ou um processo mal preparado. Descubra onde está a sua.
+    </p>
+    <div class="selos" role="list">
+      <span class="selo" role="listitem">2 minutos</span>
+      <span class="selo" role="listitem">Sem compromisso</span>
+      <span class="selo" role="listitem">Resultado imediato</span>
+    </div>
+    <button class="cta-hero" id="btnComecar">Começar o diagnóstico →</button>
+  </div>
+</section>
+
+<section class="quiz-section" id="quizSection">
+  <div class="wrap">
+
+    <div class="barra-progresso-wrap">
+      <div class="barra-progresso" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" id="barraProgresso">
+        <div class="barra-progresso-fill" id="barraFill"></div>
+      </div>
+      <div class="passo-label" id="passoLabel">Passo 1 de 4</div>
+    </div>
+
+    <!-- PASSO 1 -->
+    <div class="passo ativo" data-passo="1">
+      <h2>Comecemos pelo imóvel</h2>
+
+      <div class="campo" data-campo="tipo">
+        <label class="rotulo" id="lbl-tipo">Tipo de imóvel</label>
+        <div class="grelha col2" role="group" aria-labelledby="lbl-tipo">
+          <button type="button" class="opcao-btn" data-grupo="tipo" data-valor="Apartamento">Apartamento</button>
+          <button type="button" class="opcao-btn" data-grupo="tipo" data-valor="Moradia">Moradia</button>
+          <button type="button" class="opcao-btn" data-grupo="tipo" data-valor="Terreno">Terreno</button>
+          <button type="button" class="opcao-btn" data-grupo="tipo" data-valor="Outro">Outro</button>
+        </div>
+        <div class="msg-erro">Escolha uma opção.</div>
+      </div>
+
+      <div class="campo" data-campo="tipologia" id="campoTipologia">
+        <label class="rotulo" id="lbl-tipologia">Tipologia</label>
+        <div class="grelha col4" role="group" aria-labelledby="lbl-tipologia">
+          <button type="button" class="opcao-btn" data-grupo="tipologia" data-valor="T0/T1">T0/T1</button>
+          <button type="button" class="opcao-btn" data-grupo="tipologia" data-valor="T2">T2</button>
+          <button type="button" class="opcao-btn" data-grupo="tipologia" data-valor="T3">T3</button>
+          <button type="button" class="opcao-btn" data-grupo="tipologia" data-valor="T4+">T4+</button>
+        </div>
+        <div class="msg-erro">Escolha uma opção.</div>
+      </div>
+
+      <div class="campo" data-campo="localizacao">
+        <label class="rotulo" for="inputLocalizacao">Localização (concelho e freguesia)</label>
+        <input type="text" id="inputLocalizacao" placeholder="Ex: Cascais, Alcabideche">
+        <div class="msg-erro">Indique a localização.</div>
+      </div>
+    </div>
+
+    <!-- PASSO 2 -->
+    <div class="passo" data-passo="2">
+      <h2>O que já tem em mãos</h2>
+
+      <div class="campo" data-campo="acordo">
+        <label class="rotulo" id="lbl-acordo">Estão todos os proprietários de acordo em vender?</label>
+        <div class="opcao-lista" role="group" aria-labelledby="lbl-acordo">
+          <button type="button" class="opcao-btn" data-grupo="acordo" data-valor="Sou o único proprietário">Sou o único proprietário</button>
+          <button type="button" class="opcao-btn" data-grupo="acordo" data-valor="Sim, está tudo acordado">Sim, está tudo acordado</button>
+          <button type="button" class="opcao-btn" data-grupo="acordo" data-valor="Ainda não há acordo entre todos">Ainda não há acordo entre todos</button>
+          <button type="button" class="opcao-btn" data-grupo="acordo" data-valor="Não sei / ainda não falámos">Não sei / ainda não falámos</button>
+        </div>
+        <div class="msg-erro">Escolha uma opção.</div>
+      </div>
+
+      <div class="campo" data-campo="documentos">
+        <label class="rotulo" id="lbl-docs">Que documentos já tem?</label>
+        <div class="chips" role="group" aria-labelledby="lbl-docs">
+          <button type="button" class="chip" data-grupo="documentos" data-valor="Caderneta predial">Caderneta predial</button>
+          <button type="button" class="chip" data-grupo="documentos" data-valor="Certidão permanente do registo">Certidão permanente do registo</button>
+          <button type="button" class="chip" data-grupo="documentos" data-valor="Licença de utilização">Licença de utilização</button>
+          <button type="button" class="chip" data-grupo="documentos" data-valor="Certificado energético">Certificado energético</button>
+          <button type="button" class="chip" data-grupo="documentos" data-valor="Nenhum destes / não sei" data-exclusiva="1">Nenhum destes / não sei</button>
+        </div>
+        <div class="msg-erro">Escolha pelo menos uma opção.</div>
+      </div>
+    </div>
+
+    <!-- PASSO 3 -->
+    <div class="passo" data-passo="3">
+      <h2>O seu contexto</h2>
+
+      <div class="campo" data-campo="motivo">
+        <label class="rotulo" id="lbl-motivo">Motivo da venda</label>
+        <div class="opcao-lista" role="group" aria-labelledby="lbl-motivo">
+          <button type="button" class="opcao-btn" data-grupo="motivo" data-valor="Vou mudar de casa">Vou mudar de casa</button>
+          <button type="button" class="opcao-btn" data-grupo="motivo" data-valor="Recebi uma herança">Recebi uma herança</button>
+          <button type="button" class="opcao-btn" data-grupo="motivo" data-valor="Quero rentabilizar o investimento">Quero rentabilizar o investimento</button>
+          <button type="button" class="opcao-btn" data-grupo="motivo" data-valor="Mudança de vida (trabalho, separação, família)">Mudança de vida (trabalho, separação, família)</button>
+          <button type="button" class="opcao-btn" data-grupo="motivo" data-valor="Vou emigrar">Vou emigrar</button>
+          <button type="button" class="opcao-btn" data-grupo="motivo" data-valor="Outro">Outro</button>
+        </div>
+        <div class="msg-erro">Escolha uma opção.</div>
+      </div>
+
+      <div class="campo" data-campo="prazo">
+        <label class="rotulo" id="lbl-prazo">Prazo para vender</label>
+        <div class="opcao-lista" role="group" aria-labelledby="lbl-prazo">
+          <button type="button" class="opcao-btn" data-grupo="prazo" data-valor="O mais rápido possível">O mais rápido possível</button>
+          <button type="button" class="opcao-btn" data-grupo="prazo" data-valor="Até 3 meses">Até 3 meses</button>
+          <button type="button" class="opcao-btn" data-grupo="prazo" data-valor="3 a 6 meses">3 a 6 meses</button>
+          <button type="button" class="opcao-btn" data-grupo="prazo" data-valor="Mais de 6 meses">Mais de 6 meses</button>
+          <button type="button" class="opcao-btn" data-grupo="prazo" data-valor="Estou só a explorar a ideia">Estou só a explorar a ideia</button>
+        </div>
+        <div class="msg-erro">Escolha uma opção.</div>
+      </div>
+
+      <div class="campo" data-campo="jaMercado">
+        <label class="rotulo" id="lbl-mercado">Já está à venda?</label>
+        <div class="opcao-lista" role="group" aria-labelledby="lbl-mercado">
+          <button type="button" class="opcao-btn" data-grupo="jaMercado" data-valor="Não, ainda não">Não, ainda não</button>
+          <button type="button" class="opcao-btn" data-grupo="jaMercado" data-valor="Sim, com agência em exclusivo">Sim, com agência em exclusivo</button>
+          <button type="button" class="opcao-btn" data-grupo="jaMercado" data-valor="Sim, com agência sem exclusivo">Sim, com agência sem exclusivo</button>
+          <button type="button" class="opcao-btn" data-grupo="jaMercado" data-valor="Sim, por minha conta">Sim, por minha conta</button>
+        </div>
+        <div class="msg-erro">Escolha uma opção.</div>
+      </div>
+    </div>
+
+    <!-- PASSO 4 -->
+    <div class="passo" data-passo="4">
+      <h2>Os seus contactos</h2>
+
+      <div class="campo" data-campo="nome">
+        <label class="rotulo" for="inputNome">Nome completo</label>
+        <input type="text" id="inputNome" placeholder="Nome e apelido">
+        <div class="msg-erro">Indique o nome completo (nome e apelido).</div>
+      </div>
+
+      <div class="campo" data-campo="tel">
+        <label class="rotulo" for="inputTel">Telemóvel</label>
+        <input type="tel" id="inputTel" placeholder="912 345 678">
+        <div class="msg-erro">Indique um número de telemóvel válido.</div>
+      </div>
+
+      <div class="campo" data-campo="email">
+        <label class="rotulo" for="inputEmail">E-mail</label>
+        <input type="email" id="inputEmail" placeholder="nome@email.com">
+        <div class="msg-erro">Indique um e-mail válido.</div>
+      </div>
+
+      <div class="campo" data-campo="querAvaliacao">
+        <label class="rotulo" id="lbl-avaliacao">Quer marcar uma avaliação gratuita?</label>
+        <div class="opcao-lista" role="group" aria-labelledby="lbl-avaliacao">
+          <button type="button" class="opcao-btn" data-grupo="querAvaliacao" data-valor="Sim, quero marcar">Sim, quero marcar</button>
+          <button type="button" class="opcao-btn" data-grupo="querAvaliacao" data-valor="Talvez — primeiro quero saber mais">Talvez — primeiro quero saber mais</button>
+          <button type="button" class="opcao-btn" data-grupo="querAvaliacao" data-valor="Não, só queria o diagnóstico">Não, só queria o diagnóstico</button>
+        </div>
+        <div class="msg-erro">Escolha uma opção.</div>
+      </div>
+
+      <div class="campo" data-campo="consentimento">
+        <div class="consent-check">
+          <input type="checkbox" id="checkConsentimento">
+          <label for="checkConsentimento">Autorizo a HM Team a contactar-me sobre o meu diagnóstico.</label>
+        </div>
+        <div class="msg-erro">É necessário aceitar para continuar.</div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button type="button" class="btn btn-voltar" id="btnVoltar" style="display:none;">Voltar</button>
+      <button type="button" class="btn btn-continuar" id="btnContinuar">Continuar</button>
+    </div>
+
+  </div>
+</section>
+
+<div class="cookie-banner" id="cookieBanner">
+  <p>Usamos cookies para medir o desempenho dos nossos anúncios. Pode aceitar ou recusar — o seu diagnóstico funciona da mesma forma.</p>
+  <div class="cookie-btns">
+    <button class="cookie-recusar" id="btnRecusar">Recusar</button>
+    <button class="cookie-aceitar" id="btnAceitar">Aceitar</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  var CHAVE_UNICA = 'diag_hmteam';
+  var NOME_ORIGEM = 'HM Team — Diagnóstico de Venda';
+  var MARCA = 'HM Team';
+  var WEBHOOK_URL = '';
+  var PREFIXO_PAIS = '351';
+
+  var A = {
+    tipo:'', tipologia:'', localizacao:'',
+    acordo:'', documentos:[],
+    motivo:'', prazo:'', jaMercado:'',
+    nome:'', tel:'', email:'', querAvaliacao:''
+  };
+  var passoAtual = 1;
+  var TOTAL_PASSOS = 4;
+  var aEnviar = false;
+
+  var quizSection = document.getElementById('quizSection');
+  var btnComecar = document.getElementById('btnComecar');
+  var btnContinuar = document.getElementById('btnContinuar');
+  var btnVoltar = document.getElementById('btnVoltar');
+  var barraFill = document.getElementById('barraFill');
+  var barraProgresso = document.getElementById('barraProgresso');
+  var passoLabel = document.getElementById('passoLabel');
+  var campoTipologia = document.getElementById('campoTipologia');
+
+  btnComecar.addEventListener('click', function(){
+    quizSection.classList.add('ativo');
+    window.scrollTo({top:quizSection.offsetTop - 10, behavior:'smooth'});
+  });
+
+  // ===== seleção de opções (grelhas / listas) =====
+  document.querySelectorAll('.opcao-btn').forEach(function(btnEl){
+    btnEl.addEventListener('click', function(){
+      var grupo = btnEl.getAttribute('data-grupo');
+      var valor = btnEl.getAttribute('data-valor');
+      document.querySelectorAll('.opcao-btn[data-grupo="'+grupo+'"]').forEach(function(b){
+        b.classList.remove('selecionada');
+      });
+      btnEl.classList.add('selecionada');
+      A[grupo] = valor;
+
+      if(grupo === 'tipo'){
+        if(valor === 'Terreno'){
+          campoTipologia.style.display = 'none';
+          A.tipologia = '';
+        } else {
+          campoTipologia.style.display = '';
+        }
+      }
+      limparErro(btnEl.closest('.campo'));
+    });
+  });
+
+  // ===== chips (documentos, multi-seleção) =====
+  document.querySelectorAll('.chip').forEach(function(chipEl){
+    chipEl.addEventListener('click', function(){
+      var valor = chipEl.getAttribute('data-valor');
+      var exclusiva = chipEl.getAttribute('data-exclusiva') === '1';
+
+      if(exclusiva){
+        document.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('selecionada'); });
+        chipEl.classList.add('selecionada');
+        A.documentos = [valor];
+      } else {
+        document.querySelectorAll('.chip[data-exclusiva="1"]').forEach(function(c){ c.classList.remove('selecionada'); });
+        chipEl.classList.toggle('selecionada');
+        var idx = A.documentos.indexOf(valor);
+        var idxExcl = A.documentos.findIndex(function(v){
+          var excEl = document.querySelector('.chip[data-valor="'+v+'"][data-exclusiva="1"]');
+          return !!excEl;
+        });
+        if(idxExcl > -1) A.documentos.splice(idxExcl,1);
+        if(chipEl.classList.contains('selecionada')){
+          if(idx === -1) A.documentos.push(valor);
+        } else {
+          if(idx > -1) A.documentos.splice(idx,1);
+        }
+      }
+      limparErro(chipEl.closest('.campo'));
+    });
+  });
+
+  ['inputLocalizacao','inputNome','inputTel','inputEmail'].forEach(function(id){
+    document.getElementById(id).addEventListener('input', function(){
+      limparErro(this.closest('.campo'));
+    });
+  });
+  document.getElementById('checkConsentimento').addEventListener('change', function(){
+    limparErro(this.closest('.campo'));
+  });
+
+  function limparErro(campoEl){
+    if(campoEl) campoEl.classList.remove('erro');
+  }
+  function marcarErro(campoEl){
+    if(campoEl){
+      campoEl.classList.add('erro');
+      campoEl.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+  }
+
+  function validarPasso(n){
+    var ok = true;
+    var primeiroInvalido = null;
+
+    function falhar(seletor){
+      var el = document.querySelector(seletor);
+      if(el){ marcarErro(el); if(!primeiroInvalido) primeiroInvalido = el; }
+      ok = false;
+    }
+
+    if(n === 1){
+      if(!A.tipo) falhar('[data-campo="tipo"]');
+      if(A.tipo !== 'Terreno' && !A.tipologia) falhar('[data-campo="tipologia"]');
+      var loc = document.getElementById('inputLocalizacao').value.trim();
+      if(loc.length < 2) falhar('[data-campo="localizacao"]'); else A.localizacao = loc;
+    }
+    if(n === 2){
+      if(!A.acordo) falhar('[data-campo="acordo"]');
+      if(A.documentos.length === 0) falhar('[data-campo="documentos"]');
+    }
+    if(n === 3){
+      if(!A.motivo) falhar('[data-campo="motivo"]');
+      if(!A.prazo) falhar('[data-campo="prazo"]');
+      if(!A.jaMercado) falhar('[data-campo="jaMercado"]');
+    }
+    if(n === 4){
+      var nome = document.getElementById('inputNome').value.trim();
+      if(nome.length < 3 || nome.indexOf(' ') === -1) falhar('[data-campo="nome"]'); else A.nome = nome;
+
+      var tel = document.getElementById('inputTel').value.trim();
+      var telDigitos = tel.replace(/\D/g,'');
+      if(telDigitos.length < 9) falhar('[data-campo="tel"]'); else A.tel = tel;
+
+      var email = document.getElementById('inputEmail').value.trim();
+      var regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if(!regexEmail.test(email)) falhar('[data-campo="email"]'); else A.email = email;
+
+      if(!A.querAvaliacao) falhar('[data-campo="querAvaliacao"]');
+
+      var consent = document.getElementById('checkConsentimento').checked;
+      if(!consent) falhar('[data-campo="consentimento"]');
+    }
+
+    if(!ok && primeiroInvalido) primeiroInvalido.scrollIntoView({behavior:'smooth', block:'center'});
+    return ok;
+  }
+
+  function irParaPasso(n){
+    document.querySelectorAll('.passo').forEach(function(p){ p.classList.remove('ativo'); });
+    document.querySelector('.passo[data-passo="'+n+'"]').classList.add('ativo');
+    passoAtual = n;
+    var pct = (n / TOTAL_PASSOS) * 100;
+    barraFill.style.width = pct + '%';
+    barraProgresso.setAttribute('aria-valuenow', pct);
+    passoLabel.textContent = 'Passo ' + n + ' de ' + TOTAL_PASSOS;
+    btnVoltar.style.display = n === 1 ? 'none' : '';
+    btnContinuar.textContent = n === TOTAL_PASSOS ? 'Ver o meu diagnóstico' : 'Continuar';
+    window.scrollTo({top:quizSection.offsetTop - 10, behavior:'smooth'});
+  }
+
+  btnContinuar.addEventListener('click', function(){
+    if(!validarPasso(passoAtual)) return;
+    if(passoAtual < TOTAL_PASSOS){
+      irParaPasso(passoAtual + 1);
+    } else {
+      finalizar();
+    }
+  });
+  btnVoltar.addEventListener('click', function(){
+    if(passoAtual > 1) irParaPasso(passoAtual - 1);
+  });
+
+  // ===== BLOCO 5 — motor de diagnóstico =====
+  function diagnosticar(){
+    var doc = 100;
+    var temNenhum = A.documentos.indexOf('Nenhum destes / não sei') > -1;
+    if(temNenhum){
+      doc -= 60;
+    } else {
+      if(A.documentos.indexOf('Caderneta predial') === -1) doc -= 10;
+      if(A.documentos.indexOf('Certidão permanente do registo') === -1) doc -= 10;
+      if(A.documentos.indexOf('Licença de utilização') === -1) doc -= 15;
+      if(A.documentos.indexOf('Certificado energético') === -1) doc -= 25;
+    }
+    doc = Math.max(0, Math.min(100, doc));
+
+    var acordo = 100;
+    if(A.acordo === 'Sim, está tudo acordado') acordo -= 5;
+    else if(A.acordo === 'Ainda não há acordo entre todos') acordo -= 45;
+    else if(A.acordo === 'Não sei / ainda não falámos') acordo -= 25;
+    if(A.motivo === 'Recebi uma herança') acordo -= 10;
+    acordo = Math.max(0, Math.min(100, acordo));
+
+    var prontidao = 70;
+    if(A.prazo === 'O mais rápido possível') prontidao += 15;
+    else if(A.prazo === 'Até 3 meses') prontidao += 10;
+    else if(A.prazo === '3 a 6 meses') prontidao += 5;
+    else if(A.prazo === 'Estou só a explorar a ideia') prontidao -= 15;
+
+    if(A.jaMercado === 'Não, ainda não') prontidao += 5;
+    else if(A.jaMercado === 'Sim, com agência sem exclusivo') prontidao -= 5;
+    else if(A.jaMercado === 'Sim, com agência em exclusivo') prontidao -= 30;
+
+    if(A.querAvaliacao === 'Sim, quero marcar') prontidao += 5;
+    prontidao = Math.max(0, Math.min(100, prontidao));
+
+    var global = doc*0.45 + acordo*0.35 + prontidao*0.20;
+
+    var tempo, nota;
+    if(global >= 80){ tempo='4 a 8 semanas'; nota='A sua casa está pronta a ir a mercado.'; }
+    else if(global >= 65){ tempo='6 a 10 semanas'; nota='Está quase — faltam ajustes pontuais.'; }
+    else if(global >= 50){ tempo='2 a 4 meses'; nota='Há pontos a resolver antes de anunciar.'; }
+    else if(global >= 35){ tempo='4 a 6 meses'; nota='Vários travões vão atrasar a venda.'; }
+    else { tempo='Mais de 6 meses'; nota='Sem intervenção, a venda vai arrastar-se.'; }
+
+    var travoesCandidatos = [];
+    var faltaCertificado = temNenhum || A.documentos.indexOf('Certificado energético') === -1;
+    if(faltaCertificado){
+      travoesCandidatos.push('Falta o certificado energético — é obrigatório por lei para anunciar');
+    }
+    if(A.acordo === 'Ainda não há acordo entre todos'){
+      travoesCandidatos.push('Não há acordo entre proprietários — a escritura precisa de todos');
+    }
+    if(A.jaMercado === 'Sim, com agência em exclusivo'){
+      travoesCandidatos.push('Contrato de exclusividade ativo — só pode mudar no fim do contrato');
+    }
+    if(A.acordo === 'Não sei / ainda não falámos'){
+      travoesCandidatos.push('Não sabe se há acordo — fale com os co-proprietários antes de anunciar; descobrir a meio queima o negócio');
+    }
+    if(A.motivo === 'Recebi uma herança'){
+      travoesCandidatos.push('Imóvel de herança — a partilha e a habilitação de herdeiros têm de estar concluídas antes da escritura');
+    }
+    var docsEmFalta = temNenhum ? 4 : [
+      'Caderneta predial','Certidão permanente do registo','Licença de utilização','Certificado energético'
+    ].filter(function(d){ return A.documentos.indexOf(d) === -1; }).length;
+    if(docsEmFalta >= 3){
+      travoesCandidatos.push('Faltam ' + docsEmFalta + ' documentos — reunir tudo leva semanas, comece já');
+    }
+
+    var travoes = travoesCandidatos.slice(0,3);
+
+    return {
+      scoreDocumentacao: Math.round(doc),
+      scoreAcordo: Math.round(acordo),
+      scorePrEmMomento: Math.round(prontidao),
+      scoreGlobal: Math.round(global),
+      tempoEstimado: tempo,
+      notaTempo: nota,
+      travoes: travoes,
+      docsEmFalta: docsEmFalta,
+      temCertificado: !faltaCertificado
+    };
+  }
+
+  // ===== BLOCO 3 — fluxo técnico =====
+  function normalizarTel(v){
+    var d = (v||'').replace(/\D/g,'');
+    if(!d) return '';
+    if(d.indexOf('00') === 0) d = d.slice(2);
+    if(d.length === 9) d = PREFIXO_PAIS + d;
+    return '+' + d;
+  }
+
+  function enviarWebhook(tel, first, last, D, eventId){
+    var payload = {
+      name: A.nome, first_name: first, last_name: last,
+      phone: tel, email: A.email,
+      timestamp: new Date().toISOString(),
+      origem: NOME_ORIGEM,
+      pagina_url: window.location.href,
+      event_id: eventId,
+      consentimento_rgpd: temConsentimento() ? 'Sim' : 'Não',
+      imovel_tipo: A.tipo,
+      imovel_tipologia: A.tipologia,
+      imovel_localizacao: A.localizacao,
+      acordo_venda: A.acordo,
+      documentos_que_tem: A.documentos.join(', '),
+      documentos_em_falta: D.docsEmFalta,
+      motivo_venda: A.motivo,
+      prazo_venda: A.prazo,
+      ja_no_mercado: A.jaMercado,
+      quer_avaliacao: A.querAvaliacao,
+      score_documentacao: D.scoreDocumentacao,
+      score_acordo: D.scoreAcordo,
+      score_prontidao: D.scorePrEmMomento,
+      score_global: D.scoreGlobal,
+      tempo_estimado: D.tempoEstimado,
+      travoes: D.travoes.join(' | '),
+      raw: A
+    };
+
+    if(!WEBHOOK_URL){
+      console.log('[modo demo] payload do webhook:', payload);
+      return;
+    }
+    fetch(WEBHOOK_URL, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      keepalive:true,
+      body: JSON.stringify(payload)
+    }).catch(function(err){ console.log('Erro no webhook:', err); });
+  }
+
+  function finalizar(){
+    if(aEnviar) return;
+    aEnviar = true;
+    btnContinuar.disabled = true;
+    btnContinuar.textContent = 'A preparar o seu diagnóstico…';
+
+    var D = diagnosticar();
+    var tel = normalizarTel(A.tel);
+    var partes = (A.nome||'').trim().split(/\s+/);
+    var first = partes[0] || '', last = partes.slice(1).join(' ') || '';
+    var eventId = 'lead-' + Date.now() + '-' + Math.random().toString(36).slice(2,8);
+
+    try {
+      sessionStorage.setItem(CHAVE_UNICA, JSON.stringify({A:A, D:D, eventId:eventId, ts:Date.now()}));
+    } catch(e){}
+
+    if(PIXEL_ATIVO && typeof fbq === 'function'){
+      fbq('init', PIXEL_ID, { em:A.email, ph:tel, fn:first, ln:last });
+      fbq('track','Lead', {
+        content_name: NOME_ORIGEM, content_category: MARCA
+      }, { eventID:eventId });
+    }
+
+    enviarWebhook(tel, first, last, D, eventId);
+
+    var jaFoi = false;
+    var ir = function(){ if(jaFoi) return; jaFoi = true; window.location.href = 'resultado.html'; };
+    setTimeout(ir, 800);
+    setTimeout(ir, 2500);
+  }
+
+  // ===== banner de consentimento =====
+  var cookieBanner = document.getElementById('cookieBanner');
+  var btnAceitar = document.getElementById('btnAceitar');
+  var btnRecusar = document.getElementById('btnRecusar');
+
+  function mostrarBannerSeNecessario(){
+    try {
+      if(!localStorage.getItem(CHAVE_CONSENTIMENTO)){
+        cookieBanner.classList.add('ativo');
+      }
+    } catch(e){}
+  }
+  btnAceitar.addEventListener('click', function(){
+    try { localStorage.setItem(CHAVE_CONSENTIMENTO, 'aceite'); } catch(e){}
+    cookieBanner.classList.remove('ativo');
+    carregarPixel();
+  });
+  btnRecusar.addEventListener('click', function(){
+    try { localStorage.setItem(CHAVE_CONSENTIMENTO, 'recusado'); } catch(e){}
+    cookieBanner.classList.remove('ativo');
+  });
+  mostrarBannerSeNecessario();
+
+})();
+</script>
+
+<noscript>
+<img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=PIXEL_ID_AQUI&ev=PageView&noscript=1"/>
+</noscript>
+
+</body>
+</html>

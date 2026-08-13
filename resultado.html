@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O seu diagnóstico · HM Team</title>
+
+<script>
+  var CHAVE_UNICA = 'diag_hmteam';
+  var dadosRaw = null;
+  try { dadosRaw = sessionStorage.getItem(CHAVE_UNICA); } catch(e){}
+
+  if(!dadosRaw){
+    window.location.replace('index.html');
+  } else {
+
+    var PIXEL_ID = 'PIXEL_ID_AQUI';
+    var PIXEL_ATIVO = PIXEL_ID.indexOf('AQUI') === -1;
+    var CHAVE_CONSENTIMENTO = 'diag_hmteam_cookies';
+    var CHAVE_PV = 'diag_hmteam_pv';
+
+    function temConsentimento(){
+      try { return localStorage.getItem(CHAVE_CONSENTIMENTO)==='aceite'; }
+      catch(e){ return false; }
+    }
+
+    function jaContouPageView(){
+      try { return sessionStorage.getItem(CHAVE_PV) === '1'; }
+      catch(e){ return false; }
+    }
+    function marcarPageViewContado(){
+      try { sessionStorage.setItem(CHAVE_PV, '1'); } catch(e){}
+    }
+
+    if(temConsentimento() && PIXEL_ATIVO && !jaContouPageView()){
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', PIXEL_ID);
+      fbq('track','PageView');
+      marcarPageViewContado();
+    }
+  }
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --principal:#A0885B;
+    --destaque:#DDD2BE;
+    --fundo:#FFF9F1;
+    --escuro:#001A39;
+    --verde:#2E7D5B;
+    --terracota:#B36B3C;
+    --vermelho:#C0392B;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Inter', sans-serif;
+    background:var(--fundo);
+    color:var(--escuro);
+    line-height:1.5;
+  }
+  h1,h2,h3{font-family:'Fraunces', serif; font-weight:600;}
+  .wrap{max-width:640px; margin:0 auto; padding:0 20px;}
+
+  .cabecalho{
+    background:var(--principal); color:#fff;
+    padding:40px 0 34px; text-align:center;
+  }
+  .cabecalho .rotulo{font-size:14px; opacity:.9; margin-bottom:6px;}
+  .cabecalho h1{font-size:clamp(30px, 8vw, 44px); line-height:1.1;}
+  .cabecalho .nota{font-size:15px; margin-top:12px; opacity:.95;}
+  .cabecalho .aviso{
+    font-size:12px; opacity:.8; margin-top:16px; max-width:44ch; margin-left:auto; margin-right:auto;
+  }
+
+  section{padding:34px 0;}
+  section h2{font-size:19px; margin-bottom:18px;}
+
+  .eixo{margin-bottom:20px;}
+  .eixo-topo{display:flex; justify-content:space-between; font-size:14px; font-weight:600; margin-bottom:6px;}
+  .eixo-legenda{font-size:12.5px; color:#4a5a72; margin-bottom:8px;}
+  .eixo-barra-fundo{height:10px; background:#EFE6D8; border-radius:100px; overflow:hidden;}
+  .eixo-barra-fill{height:100%; border-radius:100px; width:0; transition:width 1.1s ease;}
+  .cor-verde{background:var(--verde);}
+  .cor-terracota{background:var(--terracota);}
+  .cor-vermelho{background:var(--vermelho);}
+
+  .checklist{list-style:none;}
+  .checklist li{
+    display:flex; gap:12px; padding:14px 0; border-bottom:1px solid var(--destaque);
+  }
+  .checklist li:last-child{border-bottom:none;}
+  .icone{font-size:18px; flex-shrink:0; width:22px; text-align:center;}
+  .icone.ok{color:var(--verde);}
+  .icone.falta{color:var(--vermelho);}
+  .doc-info strong{display:block; font-size:14.5px;}
+  .doc-info span{font-size:12.5px; color:#4a5a72;}
+  .bloqueia{
+    display:inline-block; background:var(--vermelho); color:#fff; font-size:10.5px;
+    font-weight:700; padding:2px 8px; border-radius:100px; margin-top:4px;
+  }
+  .subtitulo-dinamico{font-size:14px; font-weight:600; margin-bottom:16px; color:var(--principal);}
+
+  .travoes-lista{list-style:none;}
+  .travoes-lista li{
+    display:flex; gap:12px; background:#fff; border:1px solid var(--destaque);
+    border-radius:12px; padding:16px; margin-bottom:12px; font-size:14px;
+  }
+  .travoes-lista .numero{
+    font-family:'Fraunces', serif; font-weight:600; color:var(--principal); font-size:18px; flex-shrink:0;
+  }
+  .sem-travoes{
+    background:#EAF5EF; border:1px solid #BFE3CE; color:var(--verde);
+    border-radius:12px; padding:16px; font-weight:600; font-size:14px;
+  }
+
+  .passos-lista{list-style:none; counter-reset:passo;}
+  .passos-lista li{
+    display:flex; gap:14px; padding:14px 0; border-bottom:1px solid var(--destaque);
+  }
+  .passos-lista li:last-child{border-bottom:none;}
+  .passos-lista .num{
+    counter-increment:passo; content:counter(passo);
+    width:26px; height:26px; border-radius:50%; background:var(--principal); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; flex-shrink:0;
+  }
+
+  .cta-final{
+    background:var(--principal); color:#fff; text-align:center; padding:40px 0 46px;
+  }
+  .cta-final h2{color:#fff; font-size:23px; margin-bottom:10px;}
+  .cta-final p{font-size:14.5px; opacity:.95; margin-bottom:26px; max-width:44ch; margin:0 auto 26px;}
+  .cta-btns{display:flex; flex-direction:column; gap:12px; margin-top:24px;}
+  .cta-btn{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    background:#fff; color:var(--principal); font-weight:700; font-size:15px;
+    padding:15px; border-radius:12px; text-decoration:none;
+  }
+  .cta-btn.secundario{
+    background:transparent; color:#fff; border:1.5px solid rgba(255,255,255,.6);
+  }
+</style>
+</head>
+<body>
+
+<div id="conteudo" style="display:none;">
+
+  <header class="cabecalho">
+    <div class="wrap">
+      <div class="rotulo" id="rotuloNome">O seu diagnóstico</div>
+      <h1 id="tempoEstimado">—</h1>
+      <div class="nota" id="notaTempo"></div>
+      <div class="aviso">Estimativa indicativa. Não substitui uma avaliação presencial.</div>
+    </div>
+  </header>
+
+  <section>
+    <div class="wrap">
+      <h2>Os três eixos do seu diagnóstico</h2>
+
+      <div class="eixo">
+        <div class="eixo-topo"><span>Documentação</span><span id="pctDoc">0%</span></div>
+        <div class="eixo-legenda">Os papéis sem os quais não pode anunciar.</div>
+        <div class="eixo-barra-fundo"><div class="eixo-barra-fill" id="barraDoc"></div></div>
+      </div>
+
+      <div class="eixo">
+        <div class="eixo-topo"><span>Acordo e Titularidade</span><span id="pctAcordo">0%</span></div>
+        <div class="eixo-legenda">Quem tem de dizer sim antes da escritura.</div>
+        <div class="eixo-barra-fundo"><div class="eixo-barra-fill" id="barraAcordo"></div></div>
+      </div>
+
+      <div class="eixo">
+        <div class="eixo-topo"><span>Prontidão e Momento</span><span id="pctPront">0%</span></div>
+        <div class="eixo-legenda">O seu timing e a situação atual do anúncio.</div>
+        <div class="eixo-barra-fundo"><div class="eixo-barra-fill" id="barraPront"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Checklist de documentos</h2>
+      <div class="subtitulo-dinamico" id="subtituloDocs"></div>
+      <ul class="checklist" id="listaChecklist"></ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>O que está a travar a sua venda</h2>
+      <div id="blocoTravoes"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>O que fazer a seguir</h2>
+      <ol class="passos-lista" id="listaPassos" style="list-style:none;"></ol>
+    </div>
+  </section>
+
+  <div class="cta-final">
+    <div class="wrap">
+      <h2 id="ctaTitulo">Quer saber quanto vale MESMO a sua casa?</h2>
+      <p>O diagnóstico não pergunta o valor do seu imóvel — a avaliação gratuita é a única forma de saber o preço real.</p>
+      <div class="cta-btns" id="ctaBtns"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var dadosRaw = null;
+  try { dadosRaw = sessionStorage.getItem('diag_hmteam'); } catch(e){}
+  if(!dadosRaw) return; // já foi feito o replace no <head>
+
+  var dados = JSON.parse(dadosRaw);
+  var A = dados.A, D = dados.D;
+
+  document.getElementById('conteudo').style.display = '';
+
+  var primeiroNome = (A.nome || '').trim().split(/\s+/)[0] || '';
+  document.getElementById('rotuloNome').textContent = 'O seu diagnóstico · ' + primeiroNome;
+  document.getElementById('tempoEstimado').textContent = D.tempoEstimado;
+  document.getElementById('notaTempo').textContent = D.notaTempo;
+
+  function corPorEscalao(v){
+    if(v >= 70) return 'cor-verde';
+    if(v >= 45) return 'cor-terracota';
+    return 'cor-vermelho';
+  }
+
+  function preencherEixo(pctId, barraId, valor){
+    document.getElementById(pctId).textContent = valor + '%';
+    var barra = document.getElementById(barraId);
+    barra.classList.add(corPorEscalao(valor));
+    setTimeout(function(){ barra.style.width = valor + '%'; }, 120);
+  }
+  preencherEixo('pctDoc','barraDoc', D.scoreDocumentacao);
+  preencherEixo('pctAcordo','barraAcordo', D.scoreAcordo);
+  preencherEixo('pctPront','barraPront', D.scorePrEmMomento);
+
+  // Checklist de documentos
+  var documentosBase = [
+    {nome:'Caderneta predial', info:'Pede-se nas Finanças ou online no Portal das Finanças.'},
+    {nome:'Certidão permanente do registo', info:'Pede-se online na Conservatória do Registo Predial.'},
+    {nome:'Licença de utilização', info:'Pede-se na Câmara Municipal da área do imóvel.'},
+    {nome:'Certificado energético', info:'Emitido por um perito qualificado; obrigatório para anunciar.'}
+  ];
+  var temNenhum = A.documentos.indexOf('Nenhum destes / não sei') > -1;
+  var listaEl = document.getElementById('listaChecklist');
+  var faltamCount = 0;
+
+  documentosBase.forEach(function(doc){
+    var tem = !temNenhum && A.documentos.indexOf(doc.nome) > -1;
+    if(!tem) faltamCount++;
+    var li = document.createElement('li');
+    var bloqueia = (doc.nome === 'Certificado energético' && !tem) ? '<span class="bloqueia">BLOQUEIA O ANÚNCIO</span>' : '';
+    li.innerHTML =
+      '<span class="icone ' + (tem ? 'ok' : 'falta') + '">' + (tem ? '✓' : '✕') + '</span>' +
+      '<div class="doc-info"><strong>' + doc.nome + '</strong>' +
+      '<span>' + doc.info + '</span>' + bloqueia + '</div>';
+    listaEl.appendChild(li);
+  });
+  document.getElementById('subtituloDocs').textContent =
+    faltamCount === 0 ? 'Tem tudo.' : ('Faltam-lhe ' + faltamCount + (faltamCount === 1 ? ' documento.' : ' documentos.'));
+
+  // Travões
+  var blocoTravoes = document.getElementById('blocoTravoes');
+  if(D.travoes && D.travoes.length){
+    var ol = document.createElement('ol');
+    ol.className = 'travoes-lista';
+    ol.style.listStyle = 'none';
+    D.travoes.forEach(function(t, i){
+      var li = document.createElement('li');
+      li.innerHTML = '<span class="numero">' + (i+1) + '</span><span>' + t + '</span>';
+      ol.appendChild(li);
+    });
+    blocoTravoes.appendChild(ol);
+  } else {
+    var div = document.createElement('div');
+    div.className = 'sem-travoes';
+    div.textContent = 'Não identificámos travões críticos.';
+    blocoTravoes.appendChild(div);
+  }
+
+  // Próximos passos, ordenados pelo caso concreto
+  var passos = [];
+  if(!D.temCertificado) passos.push('Peça já o certificado energético — sem ele não pode anunciar legalmente.');
+  if(A.acordo === 'Ainda não há acordo entre todos' || A.acordo === 'Não sei / ainda não falámos'){
+    passos.push('Fale com todos os co-proprietários antes de mostrar a casa a compradores.');
+  }
+  if(A.jaMercado === 'Sim, com agência em exclusivo'){
+    passos.push('Verifique a data de fim do contrato de exclusividade antes de avançar com outra agência.');
+  }
+  passos.push('Marque a avaliação profissional — sem ela não há preço certo para anunciar.');
+  passos.push('Prepare a casa para visitas: arrumação, pequenos reparos e boas fotografias, sempre por último.');
+
+  var listaPassos = document.getElementById('listaPassos');
+  passos.slice(0,4).forEach(function(p, i){
+    var li = document.createElement('li');
+    li.innerHTML = '<span class="num">' + (i+1) + '</span><span>' + p + '</span>';
+    listaPassos.appendChild(li);
+  });
+
+  // CTA
+  if(A.querAvaliacao === 'Sim, quero marcar'){
+    document.getElementById('ctaTitulo').textContent = 'Já sabemos que quer marcar a avaliação';
+    document.querySelector('.cta-final p').textContent = 'Vamos entrar em contacto consigo nas próximas 48 horas para combinar o melhor dia.';
+  }
+
+  var ctaBtns = document.getElementById('ctaBtns');
+  var mensagemWhats = encodeURIComponent(
+    'Olá, fiz o diagnóstico de venda da HM Team. O meu imóvel é um(a) ' + (A.tipo||'') +
+    (A.tipologia ? ' ' + A.tipologia : '') + ' em ' + (A.localizacao||'') +
+    ', com estimativa de ' + D.tempoEstimado + ' para vender. Gostava de falar convosco.'
+  );
+
+  // WHATSAPP: não tem, por isso não incluímos o botão
+  // TELEFONE
+  var btnTel = document.createElement('a');
+  btnTel.className = 'cta-btn';
+  btnTel.href = 'tel:+351935592971';
+  btnTel.textContent = 'Ligar agora';
+  ctaBtns.appendChild(btnTel);
+
+  // INSTAGRAM: não tem, por isso não incluímos o botão
+
+})();
+</script>
+
+</body>
+</html>
